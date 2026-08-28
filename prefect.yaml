@@ -1,0 +1,24 @@
+name: finandata-trustgate
+prefect-version: 3.8.4
+
+build: []
+push: []
+pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: .
+
+deployments:
+  - name: cierre-financiero-diario
+    description: "ETL bancario con Quality Gate y Publication Gate para la SBS"
+    entrypoint: flows/pipeline.py:financial_dataops_pipeline
+    parameters:
+      scenario: healthy
+      force_reprocess: false
+    schedule:
+      cron: "0 18 * * 1-5"
+      timezone: America/Lima
+    work_pool:
+      name: finandata-local
+      work_queue_name: default
+      job_variables: {}
+

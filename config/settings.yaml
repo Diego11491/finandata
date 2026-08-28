@@ -1,0 +1,45 @@
+pipeline:
+  name: "FinanData TrustGate"
+  timezone: "America/Lima"
+  rejection_threshold: 0.01
+  critical_rules_zero_tolerance: true
+
+sources:
+  atm_branches:
+    - LIM001
+    - AQP001
+    - TRU001
+  api_file: "api_transactions.json"
+
+storage:
+  mode: "local"
+  azure_container: "finandata"
+  folders:
+    raw: "data/lake/bronze"
+    validated: "data/lake/silver"
+    quarantine: "data/lake/quarantine"
+  azure_paths:
+    raw: "bronze"
+    validated: "silver"
+    quarantine: "quarantine"
+
+warehouse:
+  engine: "azure_sql"
+  schema: "finandata"
+
+quality:
+  required_columns:
+    - transaction_id
+    - account_from
+    - account_to
+    - iban_from
+    - iban_to
+    - amount
+    - currency
+    - transaction_ts
+    - branch_id
+    - channel
+    - customer_document
+    - card_number
+    - updated_at
+    - cdc_operation
